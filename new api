@@ -1,0 +1,22 @@
+from flask import Flask, request
+from flasgger import Swagger
+from forex_python.converter import CurrencyRates
+
+app = Flask(__name__)
+Swagger(app)
+
+@app.route('/')
+def home():
+    return 'Welcome to the Currency Converter API!'
+
+@app.route('/convert')
+def conversion():
+    amount = float(request.args.get('amount'))
+    from_currency = request.args.get('from_currency')
+    to_currency = request.args.get('to_currency')
+    c = CurrencyRates()
+    converted_amount = c.convert(from_currency, to_currency, amount)
+    return f'{amount} {from_currency} is {converted_amount} {to_currency}'
+
+if __name__ == '__main__':
+    app.run(debug=True)
